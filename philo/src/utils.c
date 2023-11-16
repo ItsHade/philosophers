@@ -52,14 +52,29 @@ long long	ft_get_time(void)
 	return (tv.tv_sec * 1000 + tv.tv_usec / 1000);
 }
 
-int	ft_is_dead(t_data *data)
+void	ft_usleep(long long time, t_data *data)
 {
-	pthread_mutex_lock(&(data->dead_check));
-	if (data->is_dead == 1)
+	long long	start;
+
+	start = ft_get_time();
+	while (1)
 	{
-		pthread_mutex_unlock(&(data->dead_check));
-		return (1);
+		if (ft_is_dead(data) == 1)
+			break ;
+		if ((ft_get_time() - start) >= time)
+			break ;
+		usleep(10);
 	}
-	pthread_mutex_unlock(&(data->dead_check));
-	return (0);
+}
+
+void	ft_print_msg(t_data *data, int id, char *msg)
+{
+	pthread_mutex_lock(&(data->write));
+	if (ft_is_dead(data) == 0)
+	{
+		printf("%lld ", (ft_get_time() - data->starting_time));
+		printf("%d ", id + 1);
+		printf("%s\n", msg);
+	}
+	pthread_mutex_unlock(&(data->write));
 }

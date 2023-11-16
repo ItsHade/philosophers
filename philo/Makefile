@@ -4,7 +4,9 @@ SRC = 	ft_put.c \
 	philo.c \
 	thread.c \
 	utils.c \
-	verif.c 
+	verif.c \
+	mutex.c \
+	init.c
 
 SRC        := $(SRC:%=$(SRC_DIR)/%)
 OBJ        := $(SRC:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)

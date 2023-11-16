@@ -46,10 +46,20 @@ typedef struct s_data
 	long long		starting_time;
 	pthread_mutex_t	meal_check;
 	pthread_mutex_t	dead_check;
+	pthread_mutex_t	all_ate_check;
+	pthread_mutex_t	eat_count_check;
 	pthread_mutex_t	forks[250];
 	pthread_mutex_t	write;
 	t_philo			philo[250];
 }	t_data;
+
+/* INIT */
+
+void		ft_initialize_philo(t_data *data);
+
+int			ft_init_mutex(t_data *data);
+
+int			ft_initialize(t_data *data, char **argv);
 
 /* PUT FUNCTIONS */
 
@@ -67,6 +77,8 @@ int			ft_start(t_data *data);
 
 void		*thread_routine(void *data);
 
+void		*philo_do_one(void *v_philo);
+
 void		ft_exit(t_data *data, t_philo *philo);
 
 void		ft_check_death(t_data *data, t_philo *philo);
@@ -75,7 +87,21 @@ void		ft_check_death(t_data *data, t_philo *philo);
 
 long long	ft_get_time(void);
 
-int		ft_is_dead(t_data *data);
+void		ft_print_msg(t_data *data, int id, char *msg);
+
+void		ft_usleep(long long time, t_data *data);
+
+/* MUTEX */
+
+int			ft_is_dead(t_data *data);
+
+void		ft_philo_died(t_data *data, int i);
+
+int			ft_is_all_ate(t_data *data);
+
+void		ft_philo_all_ate(t_data *data);
+
+void		ft_increment_eat_count(t_data *data, t_philo *philo);
 
 /* UTILS */
 
