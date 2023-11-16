@@ -6,7 +6,7 @@
 /*   By: maburnet <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/13 17:33:19 by maburnet          #+#    #+#             */
-/*   Updated: 2023/11/13 18:09:06 by maburnet         ###   ########.fr       */
+/*   Updated: 2023/11/15 17:49:43 by maburnet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@ typedef struct s_data
 	int				all_ate;
 	long long		starting_time;
 	pthread_mutex_t	meal_check;
+	pthread_mutex_t	dead_check;
 	pthread_mutex_t	forks[250];
 	pthread_mutex_t	write;
 	t_philo			philo[250];
@@ -73,6 +74,8 @@ void		ft_check_death(t_data *data, t_philo *philo);
 /* PHILO UTILS */
 
 long long	ft_get_time(void);
+
+int		ft_is_dead(t_data *data);
 
 /* UTILS */
 

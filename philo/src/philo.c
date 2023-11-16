@@ -50,6 +50,8 @@ int	ft_initialize(t_data *data, char **argv)
 		return (-1);
 	if (pthread_mutex_init(&(data->write), NULL))
 		return (-1);
+	if (pthread_mutex_init(&(data->dead_check), NULL))
+		return (-1);
 	ft_initialize_philo(data);
 	return (0);
 }
@@ -61,6 +63,8 @@ int	ft_start(t_data *data)
 
 	i = 0;
 	philo = data->philo;
+	data->is_dead = 0;
+	data->all_ate = 0;
 	data->starting_time = ft_get_time();
 	while (i < data->philo_nbr)
 	{
@@ -80,14 +84,23 @@ void	ft_exit(t_data *data, t_philo *philo)
 	int	i;
 
 	i = -1;
-	while (!(data->is_dead) && ++i < data->philo_nbr)
+	while (++i < data->philo_nbr)
 		pthread_join(philo[i].thread_id, NULL);
-	// i = -1;
-	// while (++i < data->philo_nbr)
-	// 	pthread_mutex_destroy(&(data->forks[i]));
-	// pthread_mutex_destroy(&(data->write));
-	// pthread_mutex_destroy(&(data->meal_check));
+	i = -1;
+	while (++i < data->philo_nbr)
+		pthread_detach(philo[i].thread_id);
+	i = -1;
+	while (++i < data->philo_nbr)
+		pthread_mutex_destroy(&(data->forks[i]));
+	pthread_mutex_destroy(&(data->write));
+	pthread_mutex_destroy(&(data->meal_check));
+	pthread_mutex_destroy(&(data->dead_check));
 }
+/*
+conditional jump or move depends on uninitialised value
+thread_routine (thread.c:77)
+
+ */
 
 int	main(int ac, char **av)
 {

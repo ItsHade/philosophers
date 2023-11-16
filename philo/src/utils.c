@@ -6,7 +6,7 @@
 /*   By: maburnet <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/13 17:34:54 by maburnet          #+#    #+#             */
-/*   Updated: 2023/11/13 17:34:57 by maburnet         ###   ########.fr       */
+/*   Updated: 2023/11/15 17:50:12 by maburnet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,18 @@ long long	ft_get_time(void)
 {
 	struct timeval	tv;
 
-	if (gettimeofday(&tv, NULL))
-		return (ft_putstr_fd("gettimeofday() FAILURE\n", 2), -1);
+	gettimeofday(&tv, NULL);
 	return (tv.tv_sec * 1000 + tv.tv_usec / 1000);
+}
+
+int	ft_is_dead(t_data *data)
+{
+	pthread_mutex_lock(&(data->dead_check));
+	if (data->is_dead == 1)
+	{
+		pthread_mutex_unlock(&(data->dead_check));
+		return (1);
+	}
+	pthread_mutex_unlock(&(data->dead_check));
+	return (0);
 }
