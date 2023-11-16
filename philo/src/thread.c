@@ -6,7 +6,7 @@
 /*   By: maburnet <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/13 17:34:35 by maburnet          #+#    #+#             */
-/*   Updated: 2023/11/15 18:07:01 by maburnet         ###   ########.fr       */
+/*   Updated: 2023/11/16 14:01:34 by maburnet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,10 +44,20 @@ void	ft_philo_eat(t_philo *philo)
 	t_data	*data;
 
 	data = philo->data;
-	pthread_mutex_lock(&(data->forks[philo->left_fork]));
-	ft_print_msg(data, philo->id, "has taken a fork");
-	pthread_mutex_lock(&(data->forks[philo->right_fork]));
-	ft_print_msg(data, philo->id, "has taken a fork");
+	if (philo->id % 2 == 0)
+	{
+		pthread_mutex_lock(&(data->forks[philo->left_fork]));
+		ft_print_msg(data, philo->id, "has taken a fork");
+		pthread_mutex_lock(&(data->forks[philo->right_fork]));
+		ft_print_msg(data, philo->id, "has taken a fork");
+	}
+	else
+	{
+		pthread_mutex_lock(&(data->forks[philo->right_fork]));
+		ft_print_msg(data, philo->id, "has taken a fork");
+		pthread_mutex_lock(&(data->forks[philo->left_fork]));
+		ft_print_msg(data, philo->id, "has taken a fork");
+	}
 	pthread_mutex_lock(&(data->meal_check));
 	ft_print_msg(data, philo->id, "is eating");
 	philo->time_last_meal = ft_get_time();
@@ -68,19 +78,18 @@ void	*thread_routine(void *v_philo)
 	philo = (t_philo *)v_philo;
 	data = philo->data;
 	if ((philo->id + 1) % 2 == 0)
-		usleep(2000);
+		usleep(data->t_t_die / 10);
 	while (1)
 	{
-
 		if (ft_is_dead(data) == 1)
 			break ;
-		if (data->all_ate)
-			break ;
 		ft_philo_eat(philo);
+		if (data->all_ate == 1)
+			break ;
 		ft_print_msg(data, philo->id, "is sleeping");
 		ft_usleep(data->t_t_sleep, data);
 		ft_print_msg(data, philo->id, "is thinking");
-		ft_usleep((data->t_t_die - data->t_t_eat - data->t_t_sleep) * 1000, data);
+		ft_usleep((data->t_t_die - data->t_t_eat - data->t_t_sleep), data);
 		i++;
 	}
 	return (NULL);
